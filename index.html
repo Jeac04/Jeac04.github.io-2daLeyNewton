@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transferencia de Amortiguación</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      max-width: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card mt-5">
+          <div class="card-body">
+            <h1 class="mb-4 text-center">Calculadora de Transferencia de Amortiguación</h1>
+            <form id="dampingForm">
+              <div class="form-group">
+                <label for="springConstant">Constante del resorte \( (N/m) \)</label>
+                <input type="number" class="form-control" id="springConstant" placeholder="Ingrese la constante del resorte">
+              </div>
+              <div class="form-group">
+                <label for="dampingCoefficient">Coeficiente de amortiguación \( (Ns/m) \)</label>
+                <input type="number" class="form-control" id="dampingCoefficient" placeholder="Ingrese el coeficiente de amortiguación">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Calcular</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8 mt-4">
+        <div id="result" class="card">
+          <div class="card-body">
+            <h2 class="text-center">Resultado</h2>
+            <div id="transferFunction" class="text-center"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    document.getElementById('dampingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Obteniendo valores de entrada
+      const springConstant = parseFloat(document.getElementById('springConstant').value);
+      const dampingCoefficient = parseFloat(document.getElementById('dampingCoefficient').value);
+
+      // Calculando la transferencia de amortiguación
+      const transferFunction = calculateTransferFunction(springConstant, dampingCoefficient);
+      
+      // Mostrando el resultado
+      document.getElementById('transferFunction').innerHTML = `La transferencia de amortiguación es: $$ ${transferFunction} $$`;
+    });
+
+    // Función para calcular la transferencia de amortiguación
+    function calculateTransferFunction(k, c) {
+      const omega_n = Math.sqrt(k);
+      const zeta = c / (2 * Math.sqrt(k));
+      if (zeta < 1) {
+        return `2 * ${zeta} * ${omega_n} * s / (s^2 + 2 * ${zeta} * ${omega_n} * s + ${omega_n}^2)`;
+      } else if (zeta === 1) {
+        return `2 * ${omega_n} / (s + ${omega_n})^2`;
+      } else {
+        return `No hay amortiguamiento crítico, la transferencia no es estable`;
+      }
+    }
+  </script>
+</body>
+</html>
